@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "nonebot-plugin-wenxin"
+name = "nonebot-plugin-ernie"
 version = "0.1.0"
 description = "文心一言 Nonebot 插件"
 authors = ["Noctulus <fangyuhao0612@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    { include = "nonebot_plugin_wenxin/*.py"}
+    { include = "nonebot_plugin_ernie/*.py"}
 ]
 
 [tool.poetry.dependencies]
