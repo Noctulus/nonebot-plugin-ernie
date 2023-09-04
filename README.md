@@ -10,9 +10,11 @@
 
 _✨ 简单的文心一言 AI 对话插件 ✨_
 
-## 📖 介绍
+</div>
 
-- 本插件使用千帆大模型的ERNIE-Bot-turbo API进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/flfmc9do2)创建一个千帆应用以获取API Key、Secret Key。
+## 📖 介绍  
+
+- 本插件使用千帆大模型的ERNIE-Bot-turbo API进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/flfmc9do2)创建一个千帆应用以获取API Key、Secret Key。  
 - 文心一言 API 目前暂时不支持连续对话生成，仅能响应单句。
 
 ## 💿 安装
