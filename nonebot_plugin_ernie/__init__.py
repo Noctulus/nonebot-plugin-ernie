@@ -17,13 +17,14 @@ require("nonebot_plugin_apscheduler")
 
 from nonebot_plugin_apscheduler import scheduler
 
-__plugin_meta = PluginMetadata(
+__plugin_meta__ = PluginMetadata(
     name="文心一言",
     description="Nonebot框架下的文心一言聊天插件",
     usage="一言 调用文心一言API进行对话生成",
     config=Config,
     supported_adapters={"~onebot.v11"},
-    type="application"
+    type="application",
+    homepage="https://github.com/Noctulus/nonebot-plugin-ernie"
 )
 
 global_config = get_driver().config
