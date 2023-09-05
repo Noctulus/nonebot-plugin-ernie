@@ -16,7 +16,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 <a href="https://pypi.python.org/pypi/nonebot-plugin-ernie">
     <img src="https://img.shields.io/pypi/v/nonebot-plugin-ernie.svg" alt="pypi">
 </a>
-<img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="python">
+<img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
 
 </div>
 
