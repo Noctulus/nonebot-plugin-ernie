@@ -43,7 +43,7 @@ def get_token():
     payload = json.dumps("")
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
 
-    logger.info(f"正在更新token{url}")
+    logger.info(f"正在更新token")
     try:
         rsq = httpx.post(url, headers=headers, data=payload)
         token = rsq.json().get("access_token")
