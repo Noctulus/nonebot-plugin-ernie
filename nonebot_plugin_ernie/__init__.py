@@ -23,7 +23,7 @@ __plugin_meta__ = PluginMetadata(
     description="Nonebot框架下的文心一言聊天插件",
     usage="一言 调用文心一言API进行对话生成",
     config=Config,
-    supported_adapters={"~onebot.v11"},
+    supported_adapters=None,
     type="application",
     homepage="https://github.com/Noctulus/nonebot-plugin-ernie"
 )
