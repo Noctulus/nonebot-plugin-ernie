@@ -6,9 +6,8 @@ from nonebot.adapters import Message
 from nonebot import logger
 from nonebot.matcher import Matcher
 
-import requests
+import httpx
 import json
-import aiohttp
 
 from .config import Config
 
@@ -46,7 +45,7 @@ def get_token():
 
     logger.info(f"正在更新token{url}")
     try:
-        rsq = requests.request("POST", url, headers=headers, data=payload)
+        rsq = httpx.post(url, headers=headers, data=payload)
         token = rsq.json().get("access_token")
     except:
         logger.error("token更新失败，请检查wenxin_ak和wenxin_sk是否正确配置")
@@ -83,9 +82,9 @@ async def get_completion(content):
     }
     
     #异步请求
-    async with aiohttp.ClientSession() as client:
+    async with httpx.AsyncClient() as client:
         response = await client.post(url, headers=headers, data=payload)
-        result = await response.json()
+        result = response.json()
     
         return(result['result'])
 
