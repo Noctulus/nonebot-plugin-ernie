@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "nonebot-plugin-ernie"
-version = "0.2.1"
+version = "0.2.2"
 description = "文心一言 Nonebot 插件"
 authors = ["Noctulus <fangyuhao0612@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/Noctulus/nonebot_plugin_ernie"
+homepage = "https://github.com/Noctulus/nonebot-plugin-ernie"
 packages = [
     { include = "nonebot_plugin_ernie/*.py"}
 ]
