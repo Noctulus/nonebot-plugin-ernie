@@ -10,6 +10,16 @@
 
 _✨ 简单的文心一言 AI 对话插件 ✨_
 
+<a href="./LICENSE">
+    <img src="https://img.shields.io/github/license/Noctulus/nonebot-plugin-ernie.svg" alt="license">
+</a>
+<a href="https://pypi.python.org/pypi/nonebot-plugin-ernie">
+    <img src="https://img.shields.io/pypi/v/nonebot-plugin-ernie.svg" alt="pypi">
+</a>
+<img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="python">
+
+</div>
+
 </div>
 
 ## 📖 介绍  
