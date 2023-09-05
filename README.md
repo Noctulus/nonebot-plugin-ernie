@@ -36,7 +36,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
     nb plugin install nonebot-plugin-ernie
 
 </details>
-<details open>
+<details>
 <summary>手动安装</summary>
     
     git clone https://github.com/Noctulus/nonebot-plugin-ernie.git
