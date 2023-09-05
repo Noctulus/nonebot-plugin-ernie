@@ -20,12 +20,11 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 ## 💿 安装
 
 <details open>
-<summary>使用 nb-cli 安装</summary>
-<del>在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
+<summary>使用 nb-cli 安装（推荐）</summary>
+在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
 
     nb plugin install nonebot-plugin-ernie
-</del>
-目前尚未上架商店。
+
 </details>
 <details open>
 <summary>手动安装</summary>
@@ -33,7 +32,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
     git clone https://github.com/Noctulus/nonebot-plugin-ernie.git
 下载完成后在bot项目的pyproject.toml文件手动添加插件：
 
-    plugin_dirs = ["xxxxxx","xxxxxx",......,"下载完成的插件路径/nonebot-plugin-wenxin"]
+    plugin_dirs = ["xxxxxx","xxxxxx",......,"下载完成的插件路径/nonebot-plugin-ernie"]
 </details>
 
 ## ⚙️ 配置

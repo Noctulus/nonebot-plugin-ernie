@@ -2,8 +2,9 @@ from nonebot import get_driver
 from nonebot.plugin import PluginMetadata
 from nonebot import on_command
 from nonebot.params import CommandArg
-from nonebot.adapters.onebot.v11 import Message,MessageSegment
+from nonebot.adapters import Message
 from nonebot import logger
+from nonebot.matcher import Matcher
 
 import requests
 import json
@@ -92,16 +93,18 @@ async def get_completion(content):
 chat = on_command("一言", block=False, priority=1)
 
 @chat.handle()
-async def _(msg: Message = CommandArg()):
+async def _(matcher: Matcher, msg: Message = CommandArg()):
+    if token == "" or token is None:
+        await matcher.finish("尚未配置文心一言 API！请联系机器人管理员", at_sender=True)
     content = msg.extract_plain_text()
     if content == "" or content is None:
-        await chat.finish(MessageSegment.text("内容不能为空！"),at_sender=True)
+        await matcher.finish("内容不能为空！", at_sender=True)
 
-    await chat.send(MessageSegment.text("文心一言正在思考中……"))
+    await matcher.send("文心一言正在思考中……")
 
     try:
         res = await get_completion(content)
     except Exception as error:
-        await chat.finish(str(error))
+        await matcher.finish(str(error))
     
-    await chat.finish(MessageSegment.text(res))
+    await matcher.finish(res)
