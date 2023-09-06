@@ -93,14 +93,14 @@ chat = on_command("一言", block=False, priority=1)
 
 @chat.handle()
 async def _(matcher: Matcher, msg: Message = CommandArg()):
-    if token == "" or token is None:
-        await matcher.finish("尚未配置文心一言 API！请联系机器人管理员", at_sender=True)
     content = msg.extract_plain_text()
     if content == "" or content is None:
         return
     
     matcher.stop_propagation()
 
+    if token == "" or token is None:
+        await matcher.finish("尚未配置文心一言 API！请联系机器人管理员", at_sender=True)
     await matcher.send("文心一言正在思考中……")
 
     try:
