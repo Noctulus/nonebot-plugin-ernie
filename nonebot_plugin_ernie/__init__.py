@@ -97,7 +97,9 @@ async def _(matcher: Matcher, msg: Message = CommandArg()):
         await matcher.finish("尚未配置文心一言 API！请联系机器人管理员", at_sender=True)
     content = msg.extract_plain_text()
     if content == "" or content is None:
-        await matcher.finish("内容不能为空！", at_sender=True)
+        return
+    
+    matcher.stop_propagation()
 
     await matcher.send("文心一言正在思考中……")
 
