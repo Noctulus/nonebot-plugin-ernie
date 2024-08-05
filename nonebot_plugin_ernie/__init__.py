@@ -1,4 +1,4 @@
-from nonebot import get_driver
+from nonebot import get_driver,get_plugin_config
 from nonebot.plugin import PluginMetadata
 from nonebot import on_command
 from nonebot.params import CommandArg
@@ -9,7 +9,7 @@ from nonebot.matcher import Matcher
 import httpx
 import json
 
-from .config import Config
+from .config import PluginConfig
 
 from nonebot import require
 
@@ -21,14 +21,12 @@ __plugin_meta__ = PluginMetadata(
     name="文心一言",
     description="Nonebot框架下的文心一言聊天插件",
     usage="一言 调用文心一言API进行对话生成",
-    config=Config,
-    supported_adapters=None,
+    config=PluginConfig,
     type="application",
     homepage="https://github.com/Noctulus/nonebot-plugin-ernie"
 )
 
-global_config = get_driver().config
-config = Config.parse_obj(global_config)
+config = get_plugin_config(PluginConfig)
 
 token = ""
 
