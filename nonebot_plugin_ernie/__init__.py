@@ -1,4 +1,4 @@
-from nonebot import get_driver,get_plugin_config
+from nonebot import get_plugin_config
 from nonebot.plugin import PluginMetadata
 from nonebot import on_command
 from nonebot.params import CommandArg
@@ -11,94 +11,64 @@ import json
 
 from .config import PluginConfig
 
-from nonebot import require
-
-require("nonebot_plugin_apscheduler")
-
-from nonebot_plugin_apscheduler import scheduler
-
 __plugin_meta__ = PluginMetadata(
     name="文心一言",
     description="Nonebot框架下的文心一言聊天插件",
     usage="一言 调用文心一言API进行对话生成",
     config=PluginConfig,
     type="application",
-    homepage="https://github.com/Noctulus/nonebot-plugin-ernie"
+    homepage="https://github.com/Noctulus/nonebot-plugin-ernie",
 )
 
 config = get_plugin_config(PluginConfig)
 
-token = ""
-
-wenxin_ak = config.wenxin_ak
-wenxin_sk = config.wenxin_sk
-wenxin_model = config.wenxin_model
-
-#通过access key与secret key获取access token
-def get_token():
-    global token
-    url = "https://aip.baidubce.com/oauth/2.0/token?client_id="+wenxin_ak+"&client_secret="+wenxin_sk+"&grant_type=client_credentials"
-
-    payload = json.dumps("")
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-    logger.info(f"正在更新token")
-    try:
-        rsq = httpx.post(url, headers=headers, data=payload)
-        token = rsq.json().get("access_token")
-    except:
-        logger.error("token更新失败，请检查wenxin_ak和wenxin_sk是否正确配置")
-
-    logger.info(f"token已刷新：{token}")
+api_key = config.wenxin_api_key
+appid = config.wenxin_appid
+model = config.wenxin_model
 
 
-
-#access token有效期默认为30天，通过计划任务刷新
-driver = get_driver()
-@driver.on_startup
-async def _():
-    get_token()
-    try:
-        scheduler.add_job(get_token, "interval", days=30)
-    except:
-        logger.error("计划任务创建失败")
-
-#获取对话生成结果
+# 获取对话生成结果
 async def get_completion(content):
 
-    url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/" + wenxin_model +"?access_token=" + token
+    url = "https://qianfan.baidubce.com/v2/chat/completions"
 
-    payload = json.dumps({
-        "messages": [
-            {
-                "role": "user",
-                "content": content
-            }
-        ]
-    })
+    payload = json.dumps(
+        {"model": model, "messages": [{"role": "user", "content": content}]}
+    )
     headers = {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + api_key,
+        "appid": appid,
     }
-    
-    #异步请求
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, data=payload, timeout=60)
-        result = response.json()
-    
-        return(result['result'])
 
-#定义响应操作
+    # 异步请求
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(url, headers=headers, data=payload, timeout=1)
+        except httpx.TimeoutException:
+            logger.warning("生成超时")
+            raise TimeoutError("思考失败，服务器未及时响应！")
+        result = response.json()
+        logger.debug(f"{response.text}")
+
+        return result["choices"][0]["message"]["content"]
+
+
+# 定义响应操作
 chat = on_command("一言", block=False, priority=1)
+
 
 @chat.handle()
 async def _(matcher: Matcher, msg: Message = CommandArg()):
     content = msg.extract_plain_text()
     if content == "" or content is None:
         return
-    
+
     matcher.stop_propagation()
 
-    if token == "" or token is None:
+    logger.debug(f"{content}")
+
+    if api_key == "" or api_key is None:
         await matcher.finish("尚未配置文心一言 API！请联系机器人管理员", at_sender=True)
     await matcher.send("文心一言正在思考中……")
 
@@ -106,5 +76,5 @@ async def _(matcher: Matcher, msg: Message = CommandArg()):
         res = await get_completion(content)
     except Exception as error:
         await matcher.finish(str(error))
-    
+
     await matcher.finish(res)
