@@ -32,6 +32,7 @@ token = ""
 
 wenxin_ak = config.wenxin_ak
 wenxin_sk = config.wenxin_sk
+wenxin_model = config.wenxin_model
 
 #通过access key与secret key获取access token
 def get_token():
@@ -65,7 +66,7 @@ async def _():
 #获取对话生成结果
 async def get_completion(content):
 
-    url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant?access_token=" + token
+    url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/" + wenxin_model +"?access_token=" + token
 
     payload = json.dumps({
         "messages": [
@@ -81,7 +82,7 @@ async def get_completion(content):
     
     #异步请求
     async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, data=payload)
+        response = await client.post(url, headers=headers, data=payload, timeout=60)
         result = response.json()
     
         return(result['result'])
