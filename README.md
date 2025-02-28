@@ -24,8 +24,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 
 ## 📖 介绍  
 
-- 本插件使用千帆大模型的ERNIE-Bot-turbo API进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/flfmc9do2)创建一个千帆应用以获取API Key、Secret Key。  
-- 文心一言 API 目前暂时不支持连续对话生成，仅能响应单句。
+- 本插件使用千帆大模型的ERNIE-Bot-turbo API进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Ilkkrb0i5)创建一个千帆应用以获取API Key、Secret Key。  
 
 ## 💿 安装
 
@@ -83,6 +82,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 |:-----:|:----:|:----:|:----:|
 | wenxin_ak | 是 | 无 | 百度智能云千帆的access key |
 | wenxin_sk | 是 | 无 | 百度智能云千帆的secret key |
+| wenxin_model | 否 | ernie-4.0-turbo-8k | 百度智能云千帆模型 |
 
 ## 🎉 使用
 ### 指令表
