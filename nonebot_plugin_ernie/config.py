@@ -6,3 +6,4 @@ class PluginConfig(BaseModel):
     wenxin_ak: str = ""
     wenxin_sk: str = ""
     wenxin_model: str ="ernie-4.0-turbo-8k"
+    wenxin_sendpic: bool = False

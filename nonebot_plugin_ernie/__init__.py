@@ -1,20 +1,33 @@
-from nonebot import get_driver,get_plugin_config
+from nonebot import get_driver,get_plugin_config,require,on_command
 from nonebot.plugin import PluginMetadata
-from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.adapters import Message
-from nonebot import logger
-from nonebot.matcher import Matcher
+from nonebot.log import logger
 
 import httpx
 import json
 
 from .config import PluginConfig
 
-from nonebot import require
+require("nonebot_plugin_saa")
+from nonebot_plugin_saa import Text
+
+config = get_plugin_config(PluginConfig)
+
+token = ""
+
+wenxin_ak = config.wenxin_ak
+wenxin_sk = config.wenxin_sk
+wenxin_model = config.wenxin_model
+wenxin_sendpic = config.wenxin_sendpic
+
+
+if wenxin_sendpic == True:
+    require("nonebot_plugin_htmlrender")
+    from nonebot_plugin_htmlrender import md_to_pic
+    from nonebot_plugin_saa import Image
 
 require("nonebot_plugin_apscheduler")
-
 from nonebot_plugin_apscheduler import scheduler
 
 __plugin_meta__ = PluginMetadata(
@@ -25,15 +38,6 @@ __plugin_meta__ = PluginMetadata(
     type="application",
     homepage="https://github.com/Noctulus/nonebot-plugin-ernie"
 )
-
-config = get_plugin_config(PluginConfig)
-
-token = ""
-
-wenxin_ak = config.wenxin_ak
-wenxin_sk = config.wenxin_sk
-wenxin_model = config.wenxin_model
-
 #通过access key与secret key获取access token
 def get_token():
     global token
@@ -56,7 +60,7 @@ def get_token():
 #access token有效期默认为30天，通过计划任务刷新
 driver = get_driver()
 @driver.on_startup
-async def _():
+async def update_token():
     get_token()
     try:
         scheduler.add_job(get_token, "interval", days=30)
@@ -91,20 +95,21 @@ async def get_completion(content):
 chat = on_command("一言", block=False, priority=1)
 
 @chat.handle()
-async def _(matcher: Matcher, msg: Message = CommandArg()):
+async def _(msg: Message = CommandArg()):
     content = msg.extract_plain_text()
-    if content == "" or content is None:
-        return
-    
-    matcher.stop_propagation()
 
     if token == "" or token is None:
-        await matcher.finish("尚未配置文心一言 API！请联系机器人管理员", at_sender=True)
-    await matcher.send("文心一言正在思考中……")
+        await Text("尚未配置文心一言 API！请联系机器人管理员", at_sender=True).finish()
+    await Text("文心一言正在思考中……").send()
 
     try:
-        res = await get_completion(content)
+        res_text = await get_completion(content)
     except Exception as error:
-        await matcher.finish(str(error))
+        await Text(str(error)).finish()    
+        
+    if wenxin_sendpic == True:
+        res_img = await md_to_pic(md=res_text)
+        await Image(res_img).finish(reply=True)
+    else:
+        await Text(res_text).finish(reply=True)
     
-    await matcher.finish(res)

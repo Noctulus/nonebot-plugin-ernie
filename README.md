@@ -83,6 +83,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 | wenxin_ak | 是 | 无 | 百度智能云千帆的access key |
 | wenxin_sk | 是 | 无 | 百度智能云千帆的secret key |
 | wenxin_model | 否 | ernie-4.0-turbo-8k | 百度智能云千帆模型 |
+| wenxin_sendpic | 否 | False | 是否以图片形式发送 |
 
 ## 🎉 使用
 ### 指令表
@@ -92,3 +93,6 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 
 ### 效果图
 ![效果图](./preview.png)
+
+- 如果配置了以图片形式发送（`wenxin_sendpic=True`），可以将Markdown形式的回答以更易读的方式呈现：
+![Markdown效果图](./preview_md.png)
