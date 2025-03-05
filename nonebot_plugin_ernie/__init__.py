@@ -3,6 +3,7 @@ from nonebot.plugin import PluginMetadata
 from nonebot.params import CommandArg
 from nonebot.adapters import Message
 from nonebot.log import logger
+import time as t
 
 import httpx
 import json
@@ -14,9 +15,10 @@ api_key = config.wenxin_api_key
 appid = config.wenxin_appid
 model = config.wenxin_model
 sendpic = config.wenxin_sendpic
+timeout = config.wenxin_timeout
 
 require("nonebot_plugin_saa")
-from nonebot_plugin_saa import Text
+from nonebot_plugin_saa import Text,MessageFactory
 if sendpic == True:
     require("nonebot_plugin_htmlrender")
     from nonebot_plugin_htmlrender import md_to_pic
@@ -48,7 +50,7 @@ async def get_completion(content):
     # 异步请求
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(url, headers=headers, data=payload, timeout=1)
+            response = await client.post(url, headers=headers, data=payload, timeout=timeout)
         except httpx.TimeoutException:
             logger.warning("生成超时")
             raise TimeoutError("思考失败，服务器未及时响应！")
@@ -69,14 +71,20 @@ async def _(msg: Message = CommandArg()):
     if api_key == "" or api_key is None:
         await Text("尚未配置文心一言 API！请联系机器人管理员", at_sender=True).finish()
     await Text("文心一言正在思考中……").send()
+    t1 = t.time()
 
     try:
         res_text = await get_completion(content)
     except Exception as error:
-        await Text(str(error)).finish()    
-        
+        await Text(str(error)).finish(reply=True)    
+
+    logger.debug(f"思考用时：{t.time() - t1}s")
+
     if sendpic == True:
         res_img = await md_to_pic(md=res_text)
-        await Image(res_img).finish(reply=True)
+        res = Image(res_img)
     else:
-        await Text(res_text).finish(reply=True)
+        res = Text(res_text + "\n")
+
+    timecost = t.time() - t1
+    await MessageFactory([res,Text("思考完成，用时" + str("%.2f" % timecost) + "秒")]).finish(reply=True)

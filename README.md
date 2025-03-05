@@ -89,6 +89,9 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 | wenxin_appid | 是 | 无 | V2版本应用ID |
 | wenxin_model | 否 | ernie-4.0-turbo-8k | 百度智能云千帆模型 |
 | wenxin_sendpic | 否 | False | 是否以图片形式发送 |
+| wenxin_timeout | 否 | 60 | 调用API多久无反应视为超时 |
+
+> Note: 若调用`Deepseek R1`等大型模型，60秒以上的响应时间都是有可能的，请适当增加`wenxin_timeout`，并坐和放宽
 
 ## 🎉 使用
 ### 指令表
