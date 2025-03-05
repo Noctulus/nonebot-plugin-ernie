@@ -101,3 +101,6 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 
 ### 效果图
 ![效果图](./preview.png)
+
+- 如果配置了以图片形式发送（`wenxin_sendpic=True`），可以将Markdown形式的回答以更易读的方式呈现：
+![Markdown效果图](./preview_md.png)
