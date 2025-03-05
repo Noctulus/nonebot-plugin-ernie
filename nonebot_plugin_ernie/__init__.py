@@ -1,15 +1,26 @@
-from nonebot import get_plugin_config
+from nonebot import get_plugin_config,on_command,require
 from nonebot.plugin import PluginMetadata
-from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.adapters import Message
-from nonebot import logger
-from nonebot.matcher import Matcher
+from nonebot.log import logger
 
 import httpx
 import json
 
 from .config import PluginConfig
+config = get_plugin_config(PluginConfig)
+
+api_key = config.wenxin_api_key
+appid = config.wenxin_appid
+model = config.wenxin_model
+sendpic = config.wenxin_sendpic
+
+require("nonebot_plugin_saa")
+from nonebot_plugin_saa import Text
+if sendpic == True:
+    require("nonebot_plugin_htmlrender")
+    from nonebot_plugin_htmlrender import md_to_pic
+    from nonebot_plugin_saa import Image
 
 __plugin_meta__ = PluginMetadata(
     name="文心一言",
@@ -19,13 +30,6 @@ __plugin_meta__ = PluginMetadata(
     type="application",
     homepage="https://github.com/Noctulus/nonebot-plugin-ernie",
 )
-
-config = get_plugin_config(PluginConfig)
-
-api_key = config.wenxin_api_key
-appid = config.wenxin_appid
-model = config.wenxin_model
-
 
 # 获取对话生成结果
 async def get_completion(content):
@@ -59,22 +63,20 @@ chat = on_command("一言", block=False, priority=1)
 
 
 @chat.handle()
-async def _(matcher: Matcher, msg: Message = CommandArg()):
+async def _(msg: Message = CommandArg()):
     content = msg.extract_plain_text()
-    if content == "" or content is None:
-        return
-
-    matcher.stop_propagation()
-
-    logger.debug(f"{content}")
 
     if api_key == "" or api_key is None:
-        await matcher.finish("尚未配置文心一言 API！请联系机器人管理员", at_sender=True)
-    await matcher.send("文心一言正在思考中……")
+        await Text("尚未配置文心一言 API！请联系机器人管理员", at_sender=True).finish()
+    await Text("文心一言正在思考中……").send()
 
     try:
-        res = await get_completion(content)
+        res_text = await get_completion(content)
     except Exception as error:
-        await matcher.finish(str(error))
-
-    await matcher.finish(res)
+        await Text(str(error)).finish()    
+        
+    if sendpic == True:
+        res_img = await md_to_pic(md=res_text)
+        await Image(res_img).finish(reply=True)
+    else:
+        await Text(res_text).finish(reply=True)
