@@ -16,7 +16,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 <a href="https://pypi.python.org/pypi/nonebot-plugin-ernie">
     <img src="https://img.shields.io/pypi/v/nonebot-plugin-ernie.svg" alt="pypi">
 </a>
-<img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
+<img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python">
 
 </div>
 
@@ -24,11 +24,13 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 
 ## 📖 介绍  
 
-- 本插件使用千帆大模型的ERNIE-Bot-turbo API进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Ilkkrb0i5)创建一个千帆应用以获取API Key、Secret Key。  
+- 本插件使用千帆ModelBuilder的推理服务 API V2进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fllg87pck)创建一个千帆应用以获取API Key、AppID。  
+- [支持的API列表](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/em4tsqo3v)，默认为`ernie-4.0-turbo-8k`。
 
 ## 💿 安装
 
-<details open>
+<del>
+<details>
 <summary>使用 nb-cli 安装（推荐）</summary>
 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
 
@@ -65,10 +67,13 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
     plugins = ["nonebot_plugin_example"]
 
 </details>
-<details>
-<summary>手动安装</summary>
+</del>
+
+**以上安装方式尚未更新该分支内容。**
+<details open>
+<summary>手动安装（注意指定分支）</summary>
     
-    git clone https://github.com/Noctulus/nonebot-plugin-ernie.git
+    git clone -b v2-test https://github.com/Noctulus/nonebot-plugin-ernie.git
 下载完成后在bot项目的pyproject.toml文件手动添加插件：
 
     plugin_dirs = ["xxxxxx","xxxxxx",......,"下载完成的插件路径/nonebot-plugin-ernie"]
@@ -80,9 +85,10 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 
 | 配置项 | 必填 | 默认值 | 说明 |
 |:-----:|:----:|:----:|:----:|
-| wenxin_ak | 是 | 无 | 百度智能云千帆的access key |
-| wenxin_sk | 是 | 无 | 百度智能云千帆的secret key |
+| wenxin_api_key | 是 | 无 | 百度千帆ModelBuilder的API Key |
+| wenxin_appid | 是 | 无 | V2版本应用ID |
 | wenxin_model | 否 | ernie-4.0-turbo-8k | 百度智能云千帆模型 |
+| wenxin_sendpic | 否 | False | 是否以图片形式发送 |
 
 ## 🎉 使用
 ### 指令表
