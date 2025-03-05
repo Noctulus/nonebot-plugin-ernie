@@ -16,7 +16,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 <a href="https://pypi.python.org/pypi/nonebot-plugin-ernie">
     <img src="https://img.shields.io/pypi/v/nonebot-plugin-ernie.svg" alt="pypi">
 </a>
-<img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
+<img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python">
 
 </div>
 
@@ -24,7 +24,9 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 
 ## 📖 介绍  
 
-- 本插件使用千帆大模型的ERNIE-Bot-turbo API进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Ilkkrb0i5)创建一个千帆应用以获取API Key、Secret Key。  
+- 本插件使用千帆ModelBuilder的推理服务 API V1进行对话请求，使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Ilkkrb0i5)创建一个千帆应用以获取API Key、Secret Key。
+- [支持的API列表](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/om5aq2brc)，默认为`ernie-4.0-turbo-8k`。
+- 适配[推理服务 API V2](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/em4tsqo3v)的[分支](https://github.com/Noctulus/nonebot-plugin-ernie/tree/v2-test)尚在开发中，需要注意的是V2与V1互不兼容。  
 
 ## 💿 安装
 
