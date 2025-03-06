@@ -5,9 +5,7 @@ from nonebot.adapters import Message
 from nonebot.log import logger
 import time as t
 
-import httpx
-import json
-
+from .utils import get_completion,get_text_to_img
 from .config import PluginConfig
 config = get_plugin_config(PluginConfig)
 
@@ -33,37 +31,9 @@ __plugin_meta__ = PluginMetadata(
     homepage="https://github.com/Noctulus/nonebot-plugin-ernie",
 )
 
-# 获取对话生成结果
-async def get_completion(content):
-
-    url = "https://qianfan.baidubce.com/v2/chat/completions"
-
-    payload = json.dumps(
-        {"model": model, "messages": [{"role": "user", "content": content}]}
-    )
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + api_key,
-        "appid": appid,
-    }
-
-    # 异步请求
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(url, headers=headers, data=payload, timeout=timeout)
-        except httpx.TimeoutException:
-            logger.warning("生成超时")
-            raise TimeoutError("思考失败，服务器未及时响应！")
-        result = response.json()
-        logger.debug(f"{response.text}")
-
-        return result["choices"][0]["message"]["content"]
-
 
 # 定义响应操作
-chat = on_command("一言", block=False, priority=1)
-
-
+chat = on_command("一言", block=True, priority=1)
 @chat.handle()
 async def _(msg: Message = CommandArg()):
     content = msg.extract_plain_text()
@@ -74,7 +44,7 @@ async def _(msg: Message = CommandArg()):
     t1 = t.time()
 
     try:
-        res_text = await get_completion(content)
+        res_text = await get_completion(content=content,model=model,api_key=api_key,appid=appid,timeout=timeout)
     except Exception as error:
         await Text(str(error)).finish(reply=True)    
 
@@ -88,3 +58,22 @@ async def _(msg: Message = CommandArg()):
 
     timecost = t.time() - t1
     await MessageFactory([res,Text("思考完成，用时" + str("%.2f" % timecost) + "秒")]).finish(reply=True)
+
+text_to_image = on_command("绘图", block=True, priority=1)
+@text_to_image.handle()
+async def _(msg: Message = CommandArg()):
+    content = msg.extract_plain_text()
+    if api_key == "" or api_key is None:
+        await Text("尚未配置文心一言 API！请联系机器人管理员", at_sender=True).finish()
+    await Text("文心一言正在作画中……").send()
+    t1 = t.time()
+
+    try:
+        res_url = await get_text_to_img(prompt=content,api_key=api_key,appid=appid,timeout=timeout)
+    except Exception as error:
+        await Text(str(error)).finish(reply=True)    
+
+    res=Image(res_url)
+    timecost = t.time() - t1
+    logger.debug(f"作画用时：{timecost}s")
+    await MessageFactory([res,Text("作画完成，用时" + str("%.2f" % timecost) + "秒")]).finish(reply=True)
