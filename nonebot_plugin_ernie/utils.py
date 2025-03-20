@@ -109,7 +109,7 @@ class APIHandler:
                 response = await client.post(url=url, headers=headers, data=payload, timeout=self.config.wenxin_timeout)
             except httpx.TimeoutException:
                 logger.warning("生成超时")
-                raise TimeoutError("思考失败，服务器未及时响应！")
+                raise TimeoutError("作画失败，服务器未及时响应！")
             except httpx.HTTPError as e:
                 logger.error(f"HTTP错误：{e}")
                 raise Exception(f"HTTP错误：{e}")

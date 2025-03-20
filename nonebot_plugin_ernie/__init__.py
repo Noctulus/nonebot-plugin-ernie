@@ -83,9 +83,10 @@ async def _(msg: Message = CommandArg()):
     if error := await check_config():
         await Text(error).finish(at_sender=True)
     if config.wenxin_api_type == "v1":
-        await Text("当前 API 配置暂不支持该服务！")
+        await Text("当前 API 配置暂不支持该服务！").finish(at_sender=True)
 
     content = msg.extract_plain_text()
+    await Text("文心一言正在作画中……").send()
     start_time = time.time()
 
     try:
@@ -95,4 +96,4 @@ async def _(msg: Message = CommandArg()):
 
     timecost = time.time() - start_time
     logger.debug(f"作画用时：{timecost}s")
-    await Image(res_url).finish(reply=True)
+    await MessageFactory([Image(res_url),Text("作画完成，用时" + str("%.2f" % timecost) + "秒")]).finish(reply=True)
