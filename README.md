@@ -26,7 +26,7 @@ _✨ 简单的文心一言 AI 对话插件 ✨_
 
 - 本插件使用千帆ModelBuilder的推理服务 API进行对话请求。推理服务 API分为V1和V2两个互不兼容的版本，使用前请根据希望使用的版本进行配置。
 - V1版本使用前需根据[API调用指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/dlv4pct3s)创建一个千帆应用以获取API Key、Secret Key。
-- 使用前需根据[认证鉴权指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps)创建一个千帆应用以获取API Key、AppID。  
+- V2版本使用前需根据[认证鉴权指南](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps)创建一个千帆应用以获取API Key、AppID。  
 - 支持的API列表：[V1](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/om5aq2brc)、[V2](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/em4tsqo3v)，默认为`ernie-4.0-turbo-8k`（V1和V2版本均可使用此模型）。
 
 ## 💿 安装

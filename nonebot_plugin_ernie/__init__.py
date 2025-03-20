@@ -21,7 +21,9 @@ if config.wenxin_sendpic:
 __plugin_meta__ = PluginMetadata(
     name="文心一言",
     description="Nonebot框架下的文心一言聊天插件",
-    usage="一言 调用文心一言API进行对话生成",
+    usage=("一言 调用文心一言API进行对话生成\n"
+           "绘图 调用文心一言API进行文生图AI绘图"
+    ),
     config=PluginConfig,
     type="application",
     homepage="https://github.com/Noctulus/nonebot-plugin-ernie",
