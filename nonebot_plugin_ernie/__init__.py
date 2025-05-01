@@ -1,7 +1,5 @@
-from nonebot import get_plugin_config,on_command,require
+from nonebot import get_plugin_config,require
 from nonebot.plugin import PluginMetadata
-from nonebot.params import CommandArg
-from nonebot.adapters import Message
 from nonebot.log import logger
 import time
 
@@ -11,12 +9,12 @@ config = get_plugin_config(PluginConfig)
 from .utils import APIHandler
 api_handler = APIHandler(config=config)
 
-require("nonebot_plugin_saa")
-from nonebot_plugin_saa import Text,MessageFactory
+require("nonebot_plugin_alconna")
+from nonebot_plugin_alconna import UniMessage,on_alconna,Text,Image,Alconna,Args,Match
+
 if config.wenxin_sendpic:
     require("nonebot_plugin_htmlrender")
     from nonebot_plugin_htmlrender import md_to_pic
-    from nonebot_plugin_saa import Image
 
 __plugin_meta__ = PluginMetadata(
     name="文心一言",
@@ -50,52 +48,66 @@ async def check_config():
         return "请配置千帆API Key和Secret Key"
 
 # 定义响应操作
-chat = on_command("一言", block=True, priority=1)
+chat = on_alconna(Alconna("一言",Args["content", str]))
 @chat.handle()
-async def _(msg: Message = CommandArg()):
+async def _(content: Match[str]):
     if error := await check_config():
-        await Text(error).finish(at_sender=True)
-
-    content = msg.extract_plain_text()
-    await Text("文心一言正在思考中……").send()
+        await UniMessage([Text(error)]).finish(reply_to=True)
+    await UniMessage([Text("文心一言正在思考中")]).send(reply_to=True)
 
     try:
         start_time=time.time()
         if config.wenxin_api_type == "v1":
-            res_text = await api_handler.get_v1_completion(content=content)
+            res_text = await api_handler.get_v1_completion(content=content.result)
         if config.wenxin_api_type == "v2":
-            res_text = await api_handler.get_v2_completion(content=content)
+            res_text = await api_handler.get_v2_completion(content=content.result)
     except Exception as error:
-        await Text(str(error)).finish(reply=True)    
+        await UniMessage([Text(error)]).finish(reply_to=True)
 
-    logger.debug(f"思考用时：{time.time() - start_time}s")
+    timecost = time.time() - start_time    
+
+    logger.debug(f"思考用时：{timecost}s")
 
     if config.wenxin_sendpic:
         res_img = await md_to_pic(md=res_text)
-        res = Image(res_img)
+        message = UniMessage(
+            [
+                Image(raw=res_img),
+                Text("思考完成，用时" + str("%.2f" % timecost) + "秒")
+            ]
+        )
     else:
-        res = Text(res_text + "\n")
+        message = UniMessage(
+            [
+                Text(res_text + "\n"),
+                Text("思考完成，用时" + str("%.2f" % timecost) + "秒")
+            ]
+        )
+    await message.finish(reply_to=True)
 
-    timecost = time.time() - start_time
-    await MessageFactory([res,Text("思考完成，用时" + str("%.2f" % timecost) + "秒")]).finish(reply=True)
-
-text_to_image = on_command("绘图", block=True, priority=1)
+text_to_image = on_alconna(Alconna("绘图",Args["prompt", str]))
 @text_to_image.handle()
-async def _(msg: Message = CommandArg()):
+async def _(prompt: Match[str]):
     if error := await check_config():
-        await Text(error).finish(at_sender=True)
+        await UniMessage([Text(error)]).finish(reply_to=True)
     if config.wenxin_api_type == "v1":
-        await Text("当前 API 配置暂不支持该服务！").finish(at_sender=True)
+        await UniMessage([Text("当前暂不支持")]).finish(reply_to=True)
 
-    content = msg.extract_plain_text()
-    await Text("文心一言正在作画中……").send()
+    await UniMessage([Text("文心一言正在作画中……")]).send(reply_to=True)
     start_time = time.time()
 
     try:
-        res_url = await api_handler.get_text_to_img(prompt=content)
+        res_url = await api_handler.get_text_to_img(prompt=prompt.result)
     except Exception as error:
-        await Text(str(error)).finish(reply=True)    
+        await UniMessage([Text(error)]).finish(reply_to=True)    
 
     timecost = time.time() - start_time
     logger.debug(f"作画用时：{timecost}s")
-    await MessageFactory([Image(res_url),Text("作画完成，用时" + str("%.2f" % timecost) + "秒")]).finish(reply=True)
+    logger.debug(res_url)
+    message = UniMessage(
+        [
+            Image(url=res_url),
+            Text("作画完成，用时" + str("%.2f" % timecost) + "秒")
+        ]
+    )
+    await message.finish(reply_to=True)
