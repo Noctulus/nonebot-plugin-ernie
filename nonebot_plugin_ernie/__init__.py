@@ -10,7 +10,7 @@ from .utils import APIHandler
 api_handler = APIHandler(config=config)
 
 require("nonebot_plugin_alconna")
-from nonebot_plugin_alconna import UniMessage,on_alconna,Text,Image,Alconna,Args,Match
+from nonebot_plugin_alconna import UniMessage,on_alconna,Text,Image,Alconna,Args,Match,MultiVar
 
 if config.wenxin_sendpic:
     require("nonebot_plugin_htmlrender")
@@ -48,19 +48,21 @@ async def check_config():
         return "请配置千帆API Key和Secret Key"
 
 # 定义响应操作
-chat = on_alconna(Alconna("一言",Args["content", str]))
+chat = on_alconna(Alconna("一言",Args["content", MultiVar(str)]))
 @chat.handle()
-async def _(content: Match[str]):
+async def _(content: Match[tuple[str, ...]]):
     if error := await check_config():
         await UniMessage([Text(error)]).finish(reply_to=True)
     await UniMessage([Text("文心一言正在思考中")]).send(reply_to=True)
 
+    logger.debug(" ".join(content.result))
+
     try:
         start_time=time.time()
         if config.wenxin_api_type == "v1":
-            res_text = await api_handler.get_v1_completion(content=content.result)
+            res_text = await api_handler.get_v1_completion(content=" ".join(content.result))
         if config.wenxin_api_type == "v2":
-            res_text = await api_handler.get_v2_completion(content=content.result)
+            res_text = await api_handler.get_v2_completion(content=" ".join(content.result))
     except Exception as error:
         await UniMessage([Text(error)]).finish(reply_to=True)
 
